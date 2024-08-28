@@ -26,10 +26,21 @@ let getComputerChoice = getComputerOption(RandomNumber())
 
 let userInput = prompt("Please choose Rock, Paper, or Scissors")
 
-while (userInput == 0){
+// This turns the usersInput into a proper word
+function capitalize(userInput) {
+      let letter = userInput.slice(0,1).toUpperCase()
+      let others = userInput.slice(1).toLowerCase()
+      return letter + others
+    }
+
+// Assigns a variable to the userInput and capitalize function
+let validationCheck = capitalize(userInput)
+
+// A while loop that reprompts the user if they misspell a word
+while (validationCheck !== "Rock" && validationCheck !== "Paper" && validationCheck !== "Scissors") {
     userInput = prompt("Please choose Rock, Paper, or Scissors")
+    validationCheck = capitalize(userInput)
 }
-    
     </script>
 </body>
 </html>
