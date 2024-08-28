@@ -7,7 +7,12 @@
 </head>
 <body>
     <script>
+//Variables for player scoring
+let Computer = 0
+let Player = 0
+let round = 5
 
+for (let i = 0; i < round; i++) {
 // Returns a Random Number
 function RandomNumber(max) {
   return Math.floor(Math.random() * 3);
@@ -39,7 +44,22 @@ let validationCheck = capitalize(userInput)
 // A while loop that reprompts the user if they misspell a word
 while (validationCheck !== "Rock" && validationCheck !== "Paper" && validationCheck !== "Scissors") {
     userInput = prompt("Please choose Rock, Paper, or Scissors")
-    validationCheck = capitalize(userInput)
+    validationCheck = capitalize(userInput)}
+
+//Game logic
+    if (validationCheck == getComputerChoice) {
+    console.log("It's a draw")}
+    else if (
+    (validationCheck == "Rock" && getComputerChoice == "Scissors") ||
+    (validationCheck == "Scissors" && getComputerChoice == "Paper") ||
+    (validationCheck == "Paper" && getComputerChoice == "Rock") )
+    {
+    console.log("Player wins"); Player += 1;
+} else { console.log("Computer wins"); Computer += 1; }
+
+//Console logs the computers and players choice
+console.log("Computer's Choice: " + getComputerChoice,"| Player's Choice: " + validationCheck)
+console.log("Computer's Score: " + Computer,"| Player's Score: " + Player)
 }
     </script>
 </body>
