@@ -3,68 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-</body>
-    <script>
-//Variables for player scoring and rounds
-let Computer = 0
-let Player = 0
-let draw = 0
-let round = 5
-
-// Returns a Random Number
-function RandomNumber(max) {
-  return Math.floor(Math.random() * 3);
-}
-// Returns a random option of rock, paper, or scissors
-function getComputerOption(RandomNumber){
-let answer; if (RandomNumber == 0) { answer = "Rock" }
-else if (RandomNumber == 1) { answer = "Paper" }
-else { answer = "Scissors" }
-return answer
-}
-
-//for loop for rounds
-for (let i = 0; i < round; i++) {
-
-    // This getComputerChoice variable combines the RandomNumber and getComputerOption functions
-    let getComputerChoice = getComputerOption(RandomNumber())
-
-    let userInput = prompt("Please choose Rock, Paper, or Scissors")
-
-    // This turns the usersInput into a proper word
-    function capitalize(userInput) {
-        let letter = userInput.slice(0,1).toUpperCase()
-        let others = userInput.slice(1).toLowerCase()
-        return letter + others
+    <title>Rock, Paper, Scissors</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            margin: 0;
+        }
+        #result {
+            margin-top: 20px; /* Adds space between the result box and the top of the page */
+            padding: 10px;
+            border: 1px solid black;
+            width: 300px;
+            text-align: center;
+        }
+        #buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px; /* Adds space between the result text and the buttons */
         }
 
-    // Assigns a variable to the userInput and capitalize function
-    let validationCheck = capitalize(userInput)
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div id="result">Winner will be displayed here</div>
+    <div id="buttons">
+        <button id="rock">Rock</button>
+        <button id="paper">Paper</button>
+        <button id="scissors">Scissors</button>
+    </div>
 
-    // A while loop that reprompts the user if they misspell a word
-    while (validationCheck !== "Rock" && validationCheck !== "Paper" && validationCheck !== "Scissors") {
-        userInput = prompt("Please choose Rock, Paper, or Scissors")
-        validationCheck = capitalize(userInput)}
-
-    //Game logic
-        if (validationCheck == getComputerChoice) {
-        console.log("It's a draw"); draw += 1; i -= 1 }
-        else if (
-        (validationCheck == "Rock" && getComputerChoice == "Scissors") ||
-        (validationCheck == "Scissors" && getComputerChoice == "Paper") ||
-        (validationCheck == "Paper" && getComputerChoice == "Rock") )
-        {
-        console.log("Player wins"); Player += 1;
-        } else { console.log("Computer wins"); Computer += 1; }
-
-    //Console logs the computers and players choice
-    console.log("Computer's Choice: " + getComputerChoice,"| Player's Choice: " + validationCheck)
-    console.log("Computer's Score: " + Computer,"| Player's Score: " + Player, "| Draws " + draw)
-    console.log("Round: ", i + 1)
-}
+    <script>
+        // Variables for player scoring and round tracking
+        let Computer = 0;
+        let Player = 0;
+        let draw = 0;
+        let roundCounter = 0; // This will count valid rounds (not draws)
+        const totalRounds = 5; // Total rounds
+    
+        // Returns a Random Number for the computer's choice
+        function RandomNumber(max) {
+            return Math.floor(Math.random() * 3);
+        }
+    
+        // Returns a random option of rock, paper, or scissors
+        function getComputerOption(RandomNumber){
+            if (RandomNumber == 0) return "Rock";
+            if (RandomNumber == 1) return "Paper";
+            return "Scissors";
+        }
+    
+        // Function to update the result in the UI
+        function updateResult(winner, computerChoice, playerChoice) {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = `
+                <p>Computer's Choice: ${computerChoice} | Player's Choice: ${playerChoice}</p>
+                <p>${winner}</p>
+                <p>Computer's Score: ${Computer} | Player's Score: ${Player} | Draws: ${draw}</p>
+                <p>Round: ${roundCounter} of ${totalRounds}</p>
+            `;
+        }
+    
+        // Function to display the overall winner
+        function displayOverallWinner() {
+            const resultDiv = document.getElementById("result");
+            let overallWinner;
+            if (Player > Computer) {
+                overallWinner = "Player wins the game!";
+            } else if (Computer > Player) {
+                overallWinner = "Computer wins the game!";
+            } else {
+                overallWinner = "It's a tie!";
+            }
+            resultDiv.innerHTML += `<p><strong>${overallWinner}</strong></p>`;
+        }
+    
+        // Game logic function
+        function playRound(playerChoice) {
+            if (roundCounter < totalRounds) {
+                let getComputerChoice = getComputerOption(RandomNumber());
+    
+                // Game logic
+                if (playerChoice === getComputerChoice) {
+                    draw += 1;
+                    updateResult("It's a draw!", getComputerChoice, playerChoice);
+                } else if (
+                    (playerChoice === "Rock" && getComputerChoice === "Scissors") ||
+                    (playerChoice === "Scissors" && getComputerChoice === "Paper") ||
+                    (playerChoice === "Paper" && getComputerChoice === "Rock")
+                ) {
+                    Player += 1;
+                    roundCounter += 1;
+                    updateResult("Player wins!", getComputerChoice, playerChoice);
+                } else {
+                    Computer += 1;
+                    roundCounter += 1;
+                    updateResult("Computer wins!", getComputerChoice, playerChoice);
+                }
+    
+                // Check if 5 rounds have been played
+                if (roundCounter === totalRounds) {
+                    displayOverallWinner();
+                    disableButtons(); // Disable buttons to prevent further clicks
+                }
+            }
+        }
+    
+        // Function to disable buttons after the game ends
+        function disableButtons() {
+            document.getElementById("rock").disabled = true;
+            document.getElementById("paper").disabled = true;
+            document.getElementById("scissors").disabled = true;
+        }
+    
+        // Event listeners for buttons
+        document.getElementById("rock").addEventListener("click", function() {
+            playRound("Rock");
+        });
+        document.getElementById("paper").addEventListener("click", function() {
+            playRound("Paper");
+        });
+        document.getElementById("scissors").addEventListener("click", function() {
+            playRound("Scissors");
+        });
+    
     </script>
-
+</body>
 </html>
